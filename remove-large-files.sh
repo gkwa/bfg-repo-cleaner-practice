@@ -34,8 +34,8 @@ echo ***REMOVED*** >$bannedlist
 
 java \
     -jar $bfgjarPath \
-    --strip-blobs-bigger-than 1M \
     --replace-text $bannedlist \
+    --delete-files '{autoit-v3-setup.exe,nsis-2.46-Unicode-setup.exe,nsis-2.46-setup.exe,sed-4.2-1-bin.zip,sed-4.2-1-dep.zip,7z920.msi}' \
     /tmp/nsis-streambox3.git
 
 cd /tmp/nsis-streambox3.git
