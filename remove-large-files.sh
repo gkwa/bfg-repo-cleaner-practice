@@ -4,7 +4,6 @@ bannedlist=$(pwd)/banned.txt
 
 rm -rf /tmp/nsis-streambox3.git
 rm -rf /tmp/nsis-streambox3
-rm -rf /tmp/nsis-streambox3c
 
 git clone --mirror ~/pdev/nsis-streambox2 /tmp/nsis-streambox3.git
 git clone /tmp/nsis-streambox3.git /tmp/nsis-streambox3
