@@ -1,7 +1,10 @@
 #/bin/sh
 
+set -o errexit
+
 bfgver=1.11.6
 bfgjar=bfg-$bfgver.jar
+bfgjarPath=$(pwd)/$bfgjar
 wget --timestamping http://repo1.maven.org/maven2/com/madgag/bfg/$bfgver/$bfgjar
 
 bannedlist=$(pwd)/banned.txt
@@ -30,7 +33,7 @@ git push
 echo ***REMOVED*** >$bannedlist
 
 java \
-    -jar $bfgjar \
+    -jar $bfgjarPath \
     --strip-blobs-bigger-than 1M \
     --replace-text $bannedlist \
     /tmp/nsis-streambox3.git
