@@ -1,9 +1,14 @@
 #/bin/sh
 
+bfgver=1.11.6
+bfgjar=bfg-$bfgver.jar
+wget --timestamping http://repo1.maven.org/maven2/com/madgag/bfg/$bfgver/$bfgjar
+
 bannedlist=$(pwd)/banned.txt
 
 rm -rf /tmp/nsis-streambox3.git
 rm -rf /tmp/nsis-streambox3
+rm -rf /tmp/nsis-streambox3b
 
 git clone --mirror ~/pdev/nsis-streambox2 /tmp/nsis-streambox3.git
 git clone /tmp/nsis-streambox3.git /tmp/nsis-streambox3
@@ -25,7 +30,7 @@ git push
 echo ***REMOVED*** >$bannedlist
 
 java \
-    -jar /Users/demo/Downloads/bfg-1.11.6.jar \
+    -jar $bfgjar \
     --strip-blobs-bigger-than 1M \
     --replace-text $bannedlist \
     /tmp/nsis-streambox3.git
@@ -34,5 +39,8 @@ cd /tmp/nsis-streambox3.git
 git reflog expire --expire=now --all
 git gc --prune=now --aggressive
 
+git clone /tmp/nsis-streambox3.git /tmp/nsis-streambox3b
+
 du -sh ~/pdev/nsis-streambox2
 du -sh /tmp/nsis-streambox3.git
+du -sh /tmp/nsis-streambox3b
