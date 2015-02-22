@@ -10,7 +10,7 @@ set -o errexit
 # http://rtyley.github.io/bfg-repo-cleaner/
 # http://repo1.maven.org/maven2/com/madgag/bfg/1.11.6/bfg-1.11.6.jar
 
-bfgver=1.11.6
+bfgver=1.12.3
 bfgjar=bfg-$bfgver.jar
 wget --timestamping http://repo1.maven.org/maven2/com/madgag/bfg/$bfgver/$bfgjar
 

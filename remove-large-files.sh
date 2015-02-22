@@ -2,7 +2,7 @@
 
 set -o errexit
 
-bfgver=1.11.6
+bfgver=1.12.3
 bfgjar=bfg-$bfgver.jar
 bfgjarPath=$(pwd)/$bfgjar
 wget --timestamping http://repo1.maven.org/maven2/com/madgag/bfg/$bfgver/$bfgjar
