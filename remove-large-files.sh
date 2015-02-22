@@ -4,23 +4,22 @@ set -o errexit
 
 bfgver=1.12.3
 bfgjar=bfg-$bfgver.jar
-bfgjarPath=$(pwd)/$bfgjar
+bfgjarPath=$bfgjar
 wget --timestamping http://repo1.maven.org/maven2/com/madgag/bfg/$bfgver/$bfgjar
 
-bannedlist=$(pwd)/banned.txt
+start_folder=`pwd`
+
+
+bannedlist=banned.txt
 
 rm -rf /tmp/$0.tmp
 
-rm -rf /tmp/nsis-streambox3.git
-rm -rf /tmp/nsis-streambox3
-rm -rf /tmp/nsis-streambox3b
+rm -rf nsis-streambox3.git
+rm -rf nsis-streambox3
+rm -rf nsis-streambox3b
 
-git clone --mirror ~/pdev/nsis-streambox2 /tmp/nsis-streambox3.git
-git clone /tmp/nsis-streambox3.git /tmp/nsis-streambox3
-
-cd /tmp/nsis-streambox3
-
-git config -l | grep -i url
+git clone --mirror ~/pdev/nsis-streambox2 nsis-streambox3.git
+git clone nsis-streambox3.git nsis-streambox3
 
 cat << __EOT__ >>/tmp/$0.tmp
 regedit.exe
@@ -33,6 +32,7 @@ sed-4.2-1-dep.zip
 7z920.msi
 __EOT__
 
+cd $start_folder/nsis-streambox3
 cat /tmp/$0.tmp | sort | while read f; do rm -f $f; done;
 
 git commit -am "Deleting large files"
@@ -42,20 +42,29 @@ bfg_delete_files_args="{$(cat /tmp/$0.tmp | sort | tr '\n' ',' | sed -e 's,.$,,'
 
 # echo $bfg_delete_files_args
 
-echo ***REMOVED*** >$bannedlist
+cd $start_folder/nsis-streambox3
+echo secret_password >$bannedlist
 
-java \
-    -jar $bfgjarPath \
+JAVA=java
+[[ `uname -s` == *"CYGWIN"* ]] && JAVA='cmd /c java'
+
+cd $start_folder/nsis-streambox3
+$JAVA \
+    -jar ../$bfgjarPath \
     --replace-text $bannedlist \
     --delete-files "$bfg_delete_files_args" \
-    /tmp/nsis-streambox3.git
+    ../nsis-streambox3.git
 
-cd /tmp/nsis-streambox3.git
+cd $start_folder
+
+cd $start_folder/nsis-streambox3.git
 git reflog expire --expire=now --all
 git gc --prune=now --aggressive
 
-git clone /tmp/nsis-streambox3.git /tmp/nsis-streambox3b
+cd $start_folder
+
+git clone nsis-streambox3.git nsis-streambox3b
 
 du -sh ~/pdev/nsis-streambox2
-du -sh /tmp/nsis-streambox3.git
-du -sh /tmp/nsis-streambox3b
+du -sh nsis-streambox3.git
+du -sh nsis-streambox3b
