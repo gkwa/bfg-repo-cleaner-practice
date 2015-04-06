@@ -14,12 +14,12 @@ bannedlist=banned.txt
 
 rm -rf /tmp/$0.tmp
 
-rm -rf nsis-streambox3.git
-rm -rf nsis-streambox3
-rm -rf nsis-streambox3b
+rm -rf nsisscripts.git
+rm -rf nsisscripts
+rm -rf nsisscriptsb
 
-git clone --mirror ~/pdev/nsis-streambox2 nsis-streambox3.git
-git clone nsis-streambox3.git nsis-streambox3
+git clone --mirror ~/pdev/nsis-streambox2 nsisscripts.git
+git clone nsisscripts.git nsisscripts
 
 cat << __EOT__ >>/tmp/$0.tmp
 regedit.exe
@@ -56,7 +56,7 @@ Docs
 Icons
 __EOT__
 
-cd $start_folder/nsis-streambox3
+cd $start_folder/nsisscripts
 cat /tmp/$0.tmp | sort | while read f; do rm -rf $f; done;
 
 git commit -am "Deleting large files"
@@ -66,29 +66,29 @@ bfg_delete_files_args="{$(cat /tmp/$0.tmp | sort | tr '\n' ',' | sed -e 's,.$,,'
 
 # echo $bfg_delete_files_args
 
-cd $start_folder/nsis-streambox3
+cd $start_folder/nsisscripts
 echo secret_password >$bannedlist
 
 JAVA=java
 [[ `uname -s` == *"CYGWIN"* ]] && JAVA='cmd /c java'
 
-cd $start_folder/nsis-streambox3
+cd $start_folder/nsisscripts
 $JAVA \
     -jar ../$bfgjarPath \
     --replace-text $bannedlist \
     --delete-files "$bfg_delete_files_args" \
-    ../nsis-streambox3.git
+    ../nsisscripts.git
 
 cd $start_folder
 
-cd $start_folder/nsis-streambox3.git
+cd $start_folder/nsisscripts.git
 git reflog expire --expire=now --all
 git gc --prune=now --aggressive
 
 cd $start_folder
 
-git clone nsis-streambox3.git nsis-streambox3b
+git clone nsisscripts.git nsisscriptsb
 
 du -sh ~/pdev/nsis-streambox2
-du -sh nsis-streambox3.git
-du -sh nsis-streambox3b
+du -sh nsisscripts.git
+du -sh nsisscriptsb
