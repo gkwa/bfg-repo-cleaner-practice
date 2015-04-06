@@ -62,7 +62,11 @@ cat /tmp/$0.tmp | sort | while read f; do rm -rf $f; done;
 git commit -am "Deleting large files"
 git push
 
-bfg_delete_files_args="{$(cat /tmp/$0.tmp | sort | tr '\n' ',' | sed -e 's,.$,,')}"
+bfg_delete_files_args="$(
+{
+    cat /tmp/$0.tmp
+    git diff-tree --no-commit-id --name-only -r HEAD | awk -F/ '{print $(NF)}'
+} | sort -u | sed -e 's/$/,/' | tr -d '\n' | sed -e 's,.$,,' -e 's,^,{,' -e 's,$,},')"
 
 # echo $bfg_delete_files_args
 
