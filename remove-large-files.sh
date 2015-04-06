@@ -19,6 +19,10 @@ rm -rf nsisscripts
 rm -rf nsisscriptsb
 
 git clone --mirror ~/pdev/nsis-streambox2 nsisscripts.git
+(cd nsisscripts.git
+ git remote rm origin
+ git remote add origin git@gitlab.com:streambox/nsisscripts.git
+)
 git clone nsisscripts.git nsisscripts
 
 cat << __EOT__ >>/tmp/$0.tmp
