@@ -29,11 +29,35 @@ nsis-2.46-Unicode-setup.exe
 nsis-2.46-setup.exe
 sed-4.2-1-bin.zip
 sed-4.2-1-dep.zip
+pathman.exe
 7z920.msi
+nsis-plugins
+pathed.exe
+curl.exe
+regedit_xp
+regjump.exe
+robocopy.exe
+sc.exe
+setx.exe
+handle.exe
+taskkill.exe
+devcon
+display-path.bat
+give-nsis-priority.bat
+give-nsisunicode-priority.bat
+install-streambox-assets-to-nsis-folder.bat
+setenv
+uninstall.bat
+setup.bat
+setup-autoit.bat
+sleep.exe
+Graphics
+Docs
+Icons
 __EOT__
 
 cd $start_folder/nsis-streambox3
-cat /tmp/$0.tmp | sort | while read f; do rm -f $f; done;
+cat /tmp/$0.tmp | sort | while read f; do rm -rf $f; done;
 
 git commit -am "Deleting large files"
 git push
