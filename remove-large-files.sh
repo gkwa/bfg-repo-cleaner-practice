@@ -100,3 +100,6 @@ git clone nsisscripts.git nsisscriptsb
 du -sh ~/pdev/nsis-streambox2
 du -sh nsisscripts.git
 du -sh nsisscriptsb
+
+echo now run:
+echo "cd nsisscripts.git && git push --set-upstream origin master"
