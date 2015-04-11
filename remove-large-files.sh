@@ -7,22 +7,30 @@ bfgjar=bfg-$bfgver.jar
 bfgjarPath=$bfgjar
 wget --timestamping http://repo1.maven.org/maven2/com/madgag/bfg/$bfgver/$bfgjar
 
+toplevel="$(git rev-parse --show-toplevel)"
+
+
 start_folder=`pwd`
 
 
 bannedlist=banned.txt
 
 rm -rf /tmp/$0.tmp
+rm -rf /tmp/$0.tmp*
+set +e
+ls /tmp/$0.tmp*
+set -e
 
 rm -rf mysql_win_installer.git
 rm -rf mysql_win_installer
 rm -rf mysql_win_installerb
 
-git clone --mirror ~/pdev/streambox/mysql_win_installer mysql_win_installer.git
+git clone --bare ~/pdev/streambox/mysql_win_installer mysql_win_installer.git
+# git clone --bare git@gitlab.com:mysql_win_installer.git mysql_win_installer.git
 (cd mysql_win_installer.git
  git remote rm origin
  git remote
- git remote add origin git@gitlab.com:streambox/mysql_win_installer.git
+ git remote add origin git@gitlab.com:mysql_win_installer.git
 )
 git clone mysql_win_installer.git mysql_win_installer
 
@@ -68,11 +76,21 @@ cat /tmp/$0.tmp | sort | while read f; do rm -rf $f; done;
 git commit -am "Deleting large files" ||:
 git push
 
-bfg_delete_files_args="$(
+
+git diff-tree --no-commit-id --name-only -r HEAD |
+    awk -F/ '{print $(NF)}' >/tmp/$0.tmp2
+
 {
     cat /tmp/$0.tmp
-    git diff-tree --no-commit-id --name-only -r HEAD | awk -F/ '{print $(NF)}'
-} | sort -u | sed -e 's/$/,/' | tr -d '\n' | sed -e 's,.$,,' -e 's,^,{,' -e 's,$,},')"
+    cat /tmp/$0.tmp2
+} | sort -u >/tmp/$0.tmp3
+
+# FIXME:
+sed -i.bak '/^Makefile/d' /tmp/$0.tmp3
+
+cat /tmp/$0.tmp3 | sed -e 's/$/,/' | tr -d '\n' | sed -e 's,.$,,' -e 's,^,{,' -e 's,$,},' >/tmp/$0.tmp4
+
+bfg_delete_files_args="$(cat /tmp/$0.tmp4)"
 
 # echo $bfg_delete_files_args
 
@@ -84,10 +102,11 @@ JAVA=java
 
 cd $start_folder/mysql_win_installer
 $JAVA \
-    -jar ../$bfgjarPath \
+    -jar "$toplevel/$bfgjarPath" \
     --replace-text $bannedlist \
+    --strip-blobs-bigger-than 100k \
     --delete-files "$bfg_delete_files_args" \
-    ../mysql_win_installer.git
+    $start_folder/mysql_win_installer.git
 
 cd $start_folder
 
