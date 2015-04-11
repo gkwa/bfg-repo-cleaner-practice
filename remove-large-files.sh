@@ -26,11 +26,11 @@ rm -rf mysql_win_installer
 rm -rf mysql_win_installerb
 
 git clone --bare ~/pdev/streambox/mysql_win_installer mysql_win_installer.git
-# git clone --bare git@gitlab.com:mysql_win_installer.git mysql_win_installer.git
+# git clone --bare git@gitlab.com:streambox/mysql_win_installer.git mysql_win_installer.git
 (cd mysql_win_installer.git
  git remote rm origin
  git remote
- git remote add origin git@gitlab.com:mysql_win_installer.git
+ git remote add origin git@gitlab.com:streambox/mysql_win_installer.git
 )
 git clone mysql_win_installer.git mysql_win_installer
 
