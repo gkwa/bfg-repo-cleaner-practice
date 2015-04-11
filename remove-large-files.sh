@@ -14,18 +14,20 @@ bannedlist=banned.txt
 
 rm -rf /tmp/$0.tmp
 
-rm -rf nsisscripts.git
-rm -rf nsisscripts
-rm -rf nsisscriptsb
+rm -rf mysql_win_installer.git
+rm -rf mysql_win_installer
+rm -rf mysql_win_installerb
 
-git clone --mirror ~/pdev/nsis-streambox2 nsisscripts.git
-(cd nsisscripts.git
+git clone --mirror ~/pdev/streambox/mysql_win_installer mysql_win_installer.git
+(cd mysql_win_installer.git
  git remote rm origin
- git remote add origin git@gitlab.com:streambox/nsisscripts.git
+ git remote
+ git remote add origin git@gitlab.com:streambox/mysql_win_installer.git
 )
-git clone nsisscripts.git nsisscripts
+git clone mysql_win_installer.git mysql_win_installer
 
 cat << __EOT__ >>/tmp/$0.tmp
+nsis-streambox2
 regedit.exe
 7za.exe
 autoit-v3-setup.exe
@@ -60,10 +62,10 @@ Docs
 Icons
 __EOT__
 
-cd $start_folder/nsisscripts
+cd $start_folder/mysql_win_installer
 cat /tmp/$0.tmp | sort | while read f; do rm -rf $f; done;
 
-git commit -am "Deleting large files"
+git commit -am "Deleting large files" ||:
 git push
 
 bfg_delete_files_args="$(
@@ -74,32 +76,32 @@ bfg_delete_files_args="$(
 
 # echo $bfg_delete_files_args
 
-cd $start_folder/nsisscripts
+cd $start_folder/mysql_win_installer
 echo secret_password >$bannedlist
 
 JAVA=java
 [[ `uname -s` == *"CYGWIN"* ]] && JAVA='cmd /c java'
 
-cd $start_folder/nsisscripts
+cd $start_folder/mysql_win_installer
 $JAVA \
     -jar ../$bfgjarPath \
     --replace-text $bannedlist \
     --delete-files "$bfg_delete_files_args" \
-    ../nsisscripts.git
+    ../mysql_win_installer.git
 
 cd $start_folder
 
-cd $start_folder/nsisscripts.git
+cd $start_folder/mysql_win_installer.git
 git reflog expire --expire=now --all
 git gc --prune=now --aggressive
 
 cd $start_folder
 
-git clone nsisscripts.git nsisscriptsb
+git clone mysql_win_installer.git mysql_win_installerb
 
-du -sh ~/pdev/nsis-streambox2
-du -sh nsisscripts.git
-du -sh nsisscriptsb
+du -sh ~/pdev/streambox/mysql_win_installer
+du -sh mysql_win_installer.git
+du -sh mysql_win_installerb
 
 echo now run:
-echo "cd nsisscripts.git && git push --set-upstream origin master"
+echo "cd mysql_win_installer.git && git push --set-upstream origin master"
